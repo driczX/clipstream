@@ -63,19 +63,19 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-///Icon and Button Here
+  ///Icon and Button Here
   Widget cameraControl(context) {
     bool isSwitched = false;
     print(isSwitched);
     return Flexible(
       child: Container(
-        color: Colors.transparent,
+        color: Colors.red,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             // isSwitched = null ? Container() : isSwitched,
             Container(
+              color: Colors.red,
               width: 44,
               height: 44,
               child: FloatingActionButton(
@@ -90,6 +90,7 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
             Container(
+              color: Colors.blue,
               width: 65,
               height: 65,
               child: Switch(
@@ -104,6 +105,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   }),
             ),
             Container(
+              color: Colors.greenAccent,
               width: 70,
               height: 70,
               child: FloatingActionButton(
@@ -164,48 +166,23 @@ class _CameraScreenState extends State<CameraScreen> {
       child: Align(
         alignment: Alignment.centerLeft,
         child: FlatButton.icon(
-            onPressed: () {
-              onSwitchCamera();
-            },
-            icon: Icon(
-              getCameraLensIcons(lensDirection),
-              color: Colors.black,
-              size: 24,
-            ),
-            label: Text(
-              '${lensDirection.toString().substring(lensDirection.toString().indexOf('.') + 1).toUpperCase()}',
-              style:
-              TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
-            )),
+          onPressed: () {
+            onSwitchCamera();
+          },
+          icon: Icon(
+            getCameraLensIcons(lensDirection),
+            color: Colors.black,
+            size: 24,
+          ),
+          label: Text(
+            '${lensDirection.toString().substring(lensDirection.toString().indexOf('.') + 1).toUpperCase()}',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+          ),
+
+        ),
       ),
     );
   }
-
-  // Widget cameraToggle() {
-  //   if (cameras == null || cameras.isEmpty) {
-  //     return Spacer();
-  //   }
-  //
-  //   CameraDescription selectedCamera = cameras[selectedCameraIndex];
-  //   CameraLensDirection lensDirection = selectedCamera.lensDirection;
-  //
-  //   Container(
-  //     child: FloatingActionButton(
-  //       child: Icon(
-  //         Icons.cached,
-  //         color: Colors.black,
-  //       ),
-  //           onPressed: () {
-  //             onSwitchCamera();
-  //           },
-  //           label: Text(
-  //             '${lensDirection.toString().substring(lensDirection.toString().indexOf('.') + 1).toUpperCase()}',
-  //             style:
-  //                 TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
-  //           )),
-  //     ),
-  //   );
-  // }
 
   onCapture(context) async {
     try {
@@ -253,37 +230,33 @@ class _CameraScreenState extends State<CameraScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Container(
-        // child: Column(
-        // //   cameraToggle(),
-        // ),
-        //harus ada column
-        child: Stack(
-          children: <Widget>[
-            // Expanded(
-            //   flex: 1,
-            //   child: _cameraPreviewWidget(),
-            // ),
-            Align(
-              alignment: Alignment.center,
-              child: cameraPreview(),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 120,
-                width: double.infinity,
-                padding: EdgeInsets.all(15),
-                color: Colors.white,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    cameraToggle(),
-                    cameraControl(context),
-                    // Spacer(),
-                  ],
+        child: Column(
+          children: [
+            Stack(
+              children: <Widget>[
+                Container(child: Text('TEst'), color: Colors.lightGreen,),
+                Align(
+                  alignment: Alignment.center,
+                  child: cameraPreview(),
                 ),
-              ),
-            )
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 120,
+                    width: double.infinity,
+                    padding: EdgeInsets.all(15),
+                    color: Colors.yellow,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        cameraControl(context),
+                        // Spacer(),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
           ],
         ),
       ),
@@ -314,4 +287,3 @@ class _CameraScreenState extends State<CameraScreen> {
     String errorText = 'Error ${e.code} \nError message: ${e.description}';
   }
 }
-
