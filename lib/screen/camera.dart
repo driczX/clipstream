@@ -171,14 +171,14 @@ class _CameraScreenState extends State<CameraScreen> {
           },
           icon: Icon(
             getCameraLensIcons(lensDirection),
-            color: Colors.black,
-            size: 24,
+            color: Colors.white,
+            size: 34,
           ),
           label: Text(
-            '${lensDirection.toString().substring(lensDirection.toString().indexOf('.') + 1).toUpperCase()}',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+            ''
+            // '${lensDirection.toString().substring(lensDirection.toString().indexOf('.') + 1).toUpperCase()}',
+            // style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300, fontSize: 9.0),
           ),
-
         ),
       ),
     );
@@ -229,34 +229,53 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Container(
-        child: Column(
-          children: [
-            Stack(
-              children: <Widget>[
-                Container(child: Text('TEst'), color: Colors.lightGreen,),
-                Align(
-                  alignment: Alignment.center,
-                  child: cameraPreview(),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    height: 120,
-                    width: double.infinity,
-                    padding: EdgeInsets.all(15),
-                    color: Colors.yellow,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        cameraControl(context),
-                        // Spacer(),
-                      ],
+      body: Stack(
+        overflow: Overflow.clip,
+        children: <Widget>[
+          cameraPreview(),
+          Positioned(
+            top: 50.0,
+            left: 360,
+            child: MaterialButton(
+              onPressed: () {},
+              textColor: Colors.white,
+              padding: const EdgeInsets.all(0.0),
+              child: Container(
+                width: 120,
+                height: 30,
+                decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(15),
                     ),
-                  ),
-                )
-              ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(width: 6),
+                    cameraToggle()
+                  ],
+                ),
+              ),
             ),
+          ),
+          bottomContainerNav()
+        ],
+      ),
+    );
+  }
+
+  Widget bottomContainerNav() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 120,
+        width: double.infinity,
+        padding: EdgeInsets.all(15),
+        color: Colors.yellow,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            cameraControl(context),
+            // Spacer(),
           ],
         ),
       ),
