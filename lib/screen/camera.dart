@@ -297,9 +297,9 @@ class _CameraScreenState extends State<CameraScreen> {
         color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
+          children: <Widget>[ 
             cameraControl(context),
-            videoControl(test),
+            // videoControl(context),
             // Spacer(),
           ],
         ),
