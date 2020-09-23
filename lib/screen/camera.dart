@@ -63,58 +63,34 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Widget videoControl(context) {
-    return Flexible(
-        child: Container(
-            color: Colors.transparent,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-              Container(
-                width: 44,
-                height: 44,
-                child: FloatingActionButton(
-                  child: Icon(
-                    Icons.videocam,
-                    color: Colors.red,
-                  ),
-                  backgroundColor: Colors.white,
-                  onPressed: () {},
-                ),
-              ),
-                ],
-            ),
-        ),
-    );
-  }
-
   ///Icon and Button Here
   Widget cameraControl(context) {
     bool isSwitched = false;
     print(isSwitched);
     return Flexible(
       child: Container(
-        color: Colors.transparent,
+        color: Colors.red,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             // isSwitched = null ? Container() : isSwitched,
-            // Container(
-            //   // color: Colors.red,
-            //   width: 44,
-            //   height: 44,
-            //   child: FloatingActionButton(
-            //     child: Icon(
-            //       Icons.menu,
-            //       color: Colors.grey,
-            //     ),
-            //     backgroundColor: Colors.white,
-            //     onPressed: () {
-            //     },
-            //   ),
-            // ),
             Container(
-              // color: Colors.blue,
+              color: Colors.red,
+              width: 44,
+              height: 44,
+              child: FloatingActionButton(
+                child: Icon(
+                  Icons.menu,
+                  color: Colors.grey,
+                ),
+                backgroundColor: Colors.white,
+                onPressed: () {
+                  onCapture(context);
+                },
+              ),
+            ),
+            Container(
+              color: Colors.blue,
               width: 65,
               height: 65,
               child: Switch(
@@ -129,7 +105,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   }),
             ),
             Container(
-              // color: Colors.greenAccent,
+              color: Colors.greenAccent,
               width: 70,
               height: 70,
               child: FloatingActionButton(
@@ -144,33 +120,33 @@ class _CameraScreenState extends State<CameraScreen> {
                 },
               ),
             ),
-            // SizedBox(
-            //   width: 10,
-            // ),
-            // Container(
-            //   width: 44,
-            //   height: 44,
-            //   child: FloatingActionButton(
-            //     child: Icon(
-            //       Icons.videocam,
-            //       color: Colors.red,
-            //     ),
-            //     backgroundColor: Colors.white,
-            //     onPressed: () {},
-            //   ),
-            // ),
-            // Container(
-            //   width: 44,
-            //   height: 44,
-            //   child: FloatingActionButton(
-            //     child: Icon(
-            //       Icons.more_horiz,
-            //       color: Colors.grey,
-            //     ),
-            //     backgroundColor: Colors.white,
-            //     onPressed: () {},
-            //   ),
-            // ),
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+              width: 44,
+              height: 44,
+              child: FloatingActionButton(
+                child: Icon(
+                  Icons.videocam,
+                  color: Colors.red,
+                ),
+                backgroundColor: Colors.white,
+                onPressed: () {},
+              ),
+            ),
+            Container(
+              width: 44,
+              height: 44,
+              child: FloatingActionButton(
+                child: Icon(
+                  Icons.more_horiz,
+                  color: Colors.grey,
+                ),
+                backgroundColor: Colors.white,
+                onPressed: () {},
+              ),
+            ),
           ],
         ),
       ),
@@ -258,8 +234,8 @@ class _CameraScreenState extends State<CameraScreen> {
         children: <Widget>[
           cameraPreview(),
           Positioned(
-            top: 20.0,
-            left: 275,
+            top: MediaQuery.of(context).size.height - 760.0,
+            left: MediaQuery.of(context).size.width - 100.0,
             child: MaterialButton(
               onPressed: () {},
               textColor: Colors.white,
@@ -294,12 +270,11 @@ class _CameraScreenState extends State<CameraScreen> {
         height: 120,
         width: double.infinity,
         padding: EdgeInsets.all(15),
-        color: Colors.white,
+        color: Colors.yellow,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[ 
+          children: <Widget>[
             cameraControl(context),
-            // videoControl(context),
             // Spacer(),
           ],
         ),
