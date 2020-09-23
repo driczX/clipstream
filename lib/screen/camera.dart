@@ -227,6 +227,8 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData;
+    print('Media ' + MediaQuery.of(context).size.height.toString());
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -234,8 +236,8 @@ class _CameraScreenState extends State<CameraScreen> {
         children: <Widget>[
           cameraPreview(),
           Positioned(
-            top: 50.0,
-            left: 360,
+            top: MediaQuery.of(context).size.height - 760.0,
+            left: MediaQuery.of(context).size.width - 100.0,
             child: MaterialButton(
               onPressed: () {},
               textColor: Colors.white,
