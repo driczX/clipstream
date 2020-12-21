@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "337324217127",
+    "firebase_url": "https://clipstream-f29e4.firebaseio.com",
+    "project_id": "clipstream-f29e4",
+    "storage_bucket": "clipstream-f29e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:337324217127:android:b7f10d24274f04e094cf02",
+        "android_client_info": {
+          "package_name": "com.example.clipstream"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "337324217127-508qvrdqh6000i5e1bn4557annuao7em.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJj6dLVI99UvgWkyj35espF3UZPHunsXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "337324217127-508qvrdqh6000i5e1bn4557annuao7em.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
