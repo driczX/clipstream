@@ -1,52 +1,64 @@
+import 'dart:io';
+
 import 'package:clipstream/Pages/account_settings.dart';
 import 'package:clipstream/not_used_file/intro_page.dart';
 import 'package:clipstream/Pages/management.dart';
-import 'package:clipstream/Pages/setup.dart';
+import 'package:clipstream/test/setup.dart';
 import 'package:clipstream/screen/preview.dart';
+import 'package:clipstream/Pages/introscreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intro_slider/intro_slider.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 
-class CameraPreviewScreen extends StatefulWidget {
+class CameraButton extends StatefulWidget {
   @override
-  _CameraPreviewScreenState createState() => _CameraPreviewScreenState();
+  _CameraButtonState createState() => _CameraButtonState();
 }
 
-class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
-  CameraController cameraController;
+class _CameraButtonState extends State<CameraButton> {
+  CameraController controller;
   List cameras;
   int selectedCameraIndex;
   String imgPath;
+  String videoPath;
   bool isSwitched;
+  bool onRecording = false;
+  bool cancelButton = true;
+  bool videoButtonPressed = false;
   String dropdownValue;
   String albumName ='Media';
 
-  var rating;
+  String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final LocalStorage storage = new LocalStorage('clipstream_app');
 
   Future initCamera(CameraDescription cameraDescription) async {
-    if (cameraController != null) {
-      await cameraController.dispose();
+    if (controller != null) {
+      await controller.dispose();
     }
 
-    cameraController =
+    controller =
         CameraController(cameraDescription, ResolutionPreset.high);
 
-    cameraController.addListener(() {
+    controller.addListener(() {
       if (mounted) {
         setState(() {});
       }
     });
 
-    if (cameraController.value.hasError) {
-      print('Camera Error ${cameraController.value.errorDescription}');
+    if (controller.value.hasError) {
+      print('Camera Error ${controller.value.errorDescription}');
     }
 
     try {
-      await cameraController.initialize();
+      await controller.initialize();
     } catch (e) {
       showCameraException(e);
     }
@@ -58,7 +70,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
 
   /// Display camera preview
   Widget cameraPreview() {
-    if (cameraController == null || !cameraController.value.isInitialized) {
+    if (controller == null || !controller.value.isInitialized) {
       return Text(
         '',
         style: TextStyle(
@@ -70,8 +82,8 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
     }
 
     return AspectRatio(
-      aspectRatio: cameraController.value.aspectRatio,
-      child: CameraPreview(cameraController),
+      aspectRatio: controller.value.aspectRatio,
+      child: CameraPreview(controller),
     );
   }
 
@@ -92,9 +104,9 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
                 // color: Colors.red,
                 child: Icon(
                   Icons.menu,
-                  color: Color(0xFFD3D3D3),
+                  color: videoButtonPressed ? Colors.white : Color(0xFF696969),
                 ),
-                backgroundColor: Colors.white,
+                backgroundColor: videoButtonPressed ? Colors.transparent : Colors.white,
                 elevation: 0,
                 onPressed: () {},
                 heroTag: null,
@@ -111,8 +123,9 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
               child: Switch(
                 // isSwitched = null ? Container() : isSwitched,
                   value: isSwitched == null ? false : isSwitched,
-                  activeTrackColor: Colors.greenAccent,
+                  activeTrackColor: videoButtonPressed ? Colors.teal : Colors.greenAccent,
                   activeColor: Colors.teal,
+                  inactiveTrackColor: Color(0xFFA9A9A9),
                   onChanged: (value) {
                     setState(() {
                       isSwitched = value;
@@ -130,13 +143,35 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
               height: 70,
               child: FloatingActionButton(
                 child: Icon(
-                  Icons.camera_alt,
-                  color: Colors.white,
+                  videoButtonPressed ? onRecording ? Icons.stop : Icons.videocam : Icons.camera_alt,
+                  color: videoButtonPressed ? Colors.red : Colors.white,
                   size: 35,
                 ),
-                backgroundColor: Colors.red,
+                backgroundColor: videoButtonPressed ? Colors.white : Colors.red,
                 onPressed: () {
-                  onCapture(context);
+                  if (videoButtonPressed) {
+                    if (onRecording) {
+                      if (controller != null &&
+                          controller.value.isInitialized &&
+                          controller.value.isRecordingVideo) {
+                        _onStopButtonPressed();
+                      }
+                      setState(() {
+                        onRecording = false;
+                      });
+                    } else {
+                      if (controller != null &&
+                          controller.value.isInitialized &&
+                          !controller.value.isRecordingVideo) {
+                        _onRecordButtonPressed();
+                      }
+                      setState(() {
+                        onRecording = true;
+                      });
+                    }
+                  } else {
+                    onCapture(context);
+                  }
                 },
               ),
             ),
@@ -147,13 +182,18 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
               width: 40,
               height: 44,
               child: FloatingActionButton(
-                child: Icon(
-                  Icons.videocam,
-                  color: Colors.red,
-                ),
-                backgroundColor: Colors.white,
+                backgroundColor: videoButtonPressed ? Colors.red : Colors.white,
                 elevation: 0,
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    videoButtonPressed = !videoButtonPressed;
+                    cancelButton = !cancelButton;
+                  });
+                },
+                child: Icon(
+                  videoButtonPressed ? Icons.camera_alt : Icons.videocam,
+                  color: videoButtonPressed ? Colors.white : Colors.red,
+                ),
                 heroTag: null,
               ),
             ),
@@ -169,9 +209,9 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
               child: FloatingActionButton(
                 child: Icon(
                   Icons.more_horiz,
-                  color: Color(0xFF696969),
+                  color: videoButtonPressed ? Colors.white : Color(0xFF696969),
                 ),
-                backgroundColor: Colors.white,
+                backgroundColor: videoButtonPressed ? Colors.transparent : Colors.white,
                 elevation: 0,
                 onPressed: () {
                   // Navigator.push(context,
@@ -203,7 +243,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
 
     return Expanded(
       child: Align(
-        alignment: Alignment.centerLeft,
+        alignment: Alignment.topLeft,
         child: FlatButton.icon(
           onPressed: () {
             onSwitchCamera();
@@ -227,8 +267,8 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
       final p = await getExternalStorageDirectory();
       final name = DateTime.now();
       final path = "${p.path}/$name.png";
-
-      await cameraController.takePicture(path).then((value) {
+      await controller.takePicture(path).then((value) {
+        // await cameraController.takePicture(path).then((value) { aslinya
         // Navigator.push(
         //   context,
         //   MaterialPageRoute(builder: (context) => IntroScreen()),
@@ -240,12 +280,13 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
             print('Image is saved');
           });
         });
+        //TODO: Change this to saving image in me tab.
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ManagementScreen(
-              // imgPath: path,
-              // fileName: "$name.png",
+            builder: (context) => OnBoard(
+              imgPath: path,
+              fileName: "$name.png",
             ),
           ),
         );
@@ -257,7 +298,6 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     availableCameras().then((value) {
       cameras = value;
@@ -275,42 +315,177 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
     }).catchError((e) {
       print('Error : ${e.code}');
     });
+    var items = storage.getItem('onboarding');
+    print("tes init " + items.toString());
+    _saveToStorage();
   }
 
+  _saveToStorage() {
+    storage.setItem('onboarding', DateTime.now());
+  }
   @override
   Widget build(BuildContext context) {
-    ('media ' + MediaQuery.of(context).size.height.toString());
-    ('media ' + MediaQuery.of(context).size.width.toString());
+
+    var items12 = storage.getItem('onboarding');
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        overflow: Overflow.clip,
-        children: <Widget>[
-          cameraPreview(),
-          Positioned(
-            top: MediaQuery.of(context).size.height - 630.0,
-            left: MediaQuery.of(context).size.width - 80.0,
-            child: MaterialButton(
-              onPressed: () {},
-              textColor: Colors.white,
-              padding: const EdgeInsets.all(0.0),
-              child: Container(
-                width: 120,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[SizedBox(width: 6), cameraToggle()],
-                ),
-              ),
-            ),
-          ),
-          bottomContainerNav()
-        ],
+      body: Container(
+        child: FutureBuilder(
+            future: storage.ready,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              return Stack(
+                overflow: Overflow.clip,
+                children: <Widget>[
+                  cameraPreview(),
+                  Positioned(
+                    top: MediaQuery.of(context).size.height - 630.0,
+                    left: MediaQuery.of(context).size.width - 80.0,
+                    child: MaterialButton(
+                      onPressed: () {
+
+                      },
+                      textColor: Colors.white,
+                      padding: const EdgeInsets.all(0.0),
+                      child: Container(
+                        width: 120,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[SizedBox(width: 6), cameraToggle()],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: videoButtonPressed ? true : cancelButton,
+                    child: Positioned(
+                      top: MediaQuery.of(context).size.height - 630.0,
+                      right: MediaQuery.of(context).size.width - 40.0,
+                      child: IconButton(
+                          onPressed: (){
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(Icons.close,
+                            color: Colors.white,
+                            size: 34,)),
+                    ),
+                  ),
+                  //TODO: Build a local storage.
+                  ///Text muncul tapi null, not complete yet.
+                  // Positioned(
+                  //   top: MediaQuery.of(context).size.height - 330.0,
+                  //   right: MediaQuery.of(context).size.width - 40.0,
+                  //   child: Text(
+                  //       items12.toString(),
+                  //       style: TextStyle(
+                  //         color: Colors.white,
+                  //         fontSize: 20,
+                  //       ),
+                  //   ),
+                  // ),
+                  bottomContainerNav()
+                ],
+              );
+            }
+        ),
       ),
+    );
+  }
+
+  void _onRecordButtonPressed() {
+    _startVideoRecording().then((String filePath) {
+      if (filePath != null) {
+        Fluttertoast.showToast(
+            msg: 'Recording video started',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            // timeInSecForIos: 1,
+            backgroundColor: Colors.grey,
+            textColor: Colors.white
+        );
+      }
+    });
+  }
+
+  void _onStopButtonPressed() {
+    _stopVideoRecording().then((_) {
+      if (mounted) setState(() {});
+      Fluttertoast.showToast(
+          msg: 'Video recorded to $videoPath',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          // timeInSecForIos: 1,
+          backgroundColor: Colors.grey,
+          textColor: Colors.white
+      );
+    });
+  }
+
+  Future<String> _startVideoRecording() async {
+    if (!controller.value.isInitialized) {
+      Fluttertoast.showToast(
+          msg: 'Please wait',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          // timeInSecForIos: 1,
+          backgroundColor: Colors.grey,
+          textColor: Colors.white
+      );
+
+      return null;
+    }
+
+    // Do nothing if a recording is on progress
+    if (controller.value.isRecordingVideo) {
+      return null;
+    }
+
+    final Directory appDirectory = await getApplicationDocumentsDirectory();
+    final String videoDirectory = '${appDirectory.path}/Videos';
+    await Directory(videoDirectory).create(recursive: true);
+    final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+    final String filePath = '$videoDirectory/${currentTime}.mp4';
+
+    try {
+      await controller.startVideoRecording(filePath);
+      //      await controller.startVideoRecording(filePath);
+      videoPath = filePath;
+    } on CameraException catch (e) {
+      _showCameraException(e);
+      return null;
+    }
+
+    return filePath;
+  }
+
+  Future<void> _stopVideoRecording() async {
+    if (!controller.value.isRecordingVideo) {
+      return null;
+    }
+
+    try {
+      await controller.stopVideoRecording();
+    } on CameraException catch (e) {
+      _showCameraException(e);
+      return null;
+    }
+  }
+
+  void _showCameraException(CameraException e) {
+    String errorText = 'Error: ${e.code}\nError Message: ${e.description}';
+    print(errorText);
+
+    Fluttertoast.showToast(
+        msg: 'Error: ${e.code}\n${e.description}',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        // timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white
     );
   }
 
@@ -321,7 +496,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
         height: 112,
         width: double.infinity,
         padding: EdgeInsets.all(15),
-        color: Colors.white,
+        color: videoButtonPressed ? Colors.black.withOpacity(0.5) : Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[

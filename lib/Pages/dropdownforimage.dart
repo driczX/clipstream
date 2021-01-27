@@ -61,7 +61,7 @@ class _DropDownButtonState extends State<DropDownButtonPage> {
         style: TextStyle(color: Colors.black, fontSize: 30),
         isDense: true,
         iconSize: 40.0,
-        dropdownColor: Color(0xFFEEECEC),
+        dropdownColor: Color(0xFFF5F5F5),
         iconEnabledColor: Color(0xFF696969),
         isExpanded: true,
       );
@@ -72,7 +72,7 @@ class _DropDownButtonState extends State<DropDownButtonPage> {
         child: Column(
           children: <Widget>[
             Container(
-              color: Color(0xFFEEECEC),
+              color: Color(0xFFF5F5F5),
               alignment: Alignment.centerLeft,
               child: _normal2Down(),
             ),

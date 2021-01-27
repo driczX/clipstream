@@ -1,7 +1,5 @@
-///If this code is not used, the error on preview screen won't show
-
 import 'package:clipstream/Pages/management.dart';
-import 'package:clipstream/Pages/otp.dart';
+import 'package:clipstream/Pages/otpscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -135,7 +133,8 @@ class _VerificationState extends State<VerificationPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: TextFormField(
+            child: TextField(
+              textAlign: TextAlign.center,
               keyboardType: TextInputType.name,
               onChanged: (value) {
                 setState(() {
@@ -143,11 +142,13 @@ class _VerificationState extends State<VerificationPage> {
                 });
               },
               decoration: InputDecoration(
-                labelText: "Full name",
-                border: new OutlineInputBorder(
-                  borderRadius: new BorderRadius.circular(0.0),
-                  borderSide: new BorderSide(),
-                ),
+                fillColor: Color(0xFFF5F5F5),
+                hintText: "Full name",
+                filled: true,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
               ),
             ),
           ),
@@ -157,16 +158,19 @@ class _VerificationState extends State<VerificationPage> {
           width: 400,
             child: IntlPhoneField(
               decoration: InputDecoration(
-                labelText: 'Phone Number',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(),
-                ),
+                hintText: 'Phone number',
+                filled: true,
+                fillColor: Color(0xFFF5F5F5),
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
               ),
               keyboardType: TextInputType.number,
               initialCountryCode: 'ID',
               onChanged: (value) {
                 setState(() {
-                  print(value.completeNumber + " " + value.number);
+                  print(value.completeNumber);
                   this.phoneNo = value.completeNumber;
                   this.partNo = value.number;
                 });
@@ -201,10 +205,7 @@ class _VerificationState extends State<VerificationPage> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 30, right: 2),
         child: Visibility(
-          visible: this.phoneNo != '' &&
-              this.phoneName != '' &&
-              this.phoneNo != null &&
-              this.phoneName != null,
+          visible: this.phoneNo != '' && this.phoneName != '' && this.phoneNo != null && this.phoneName != null,
           child: FloatingActionButton(
             onPressed: verfiyPhone,
             tooltip: 'Increment',

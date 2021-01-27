@@ -1,25 +1,41 @@
-// // ///Fix the error!
+///Buat image nya kelempar ke tab Everyone!
+
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:clipstream/Pages/streamalert.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
 
 class Gallery extends StatefulWidget {
   @override
   _GalleryState createState() => _GalleryState();
+  final Function pressedAppBar;
+  final Function imageThrow;
+  final int currentSelectedImage;
+
+  final Map<String, bool> isSelectedArray;
+  const Gallery ({Key key, this.pressedAppBar, this.imageThrow, this.currentSelectedImage, this.isSelectedArray}) : super (key:key);
 }
 
 class _GalleryState extends State<Gallery> {
   // This will hold all the assets we fetched
   List<AssetEntity> assets = [];
+  List<AssetEntity> imageArr = [];
+  Map<String, int> indexedAssets = {
+    "a": -1,
+  };
+  int currentSelectedImage;
 
   @override
   void initState() {
-    _fetchAssets();
     super.initState();
+    _fetchAssets();
+    currentSelectedImage = widget.currentSelectedImage;
   }
 
   _fetchAssets() async {
@@ -35,22 +51,90 @@ class _GalleryState extends State<Gallery> {
     );
 
     // Update the state and notify UI
-    setState(() => assets = recentAssets);
+    for (var i = 0; i < recentAssets.length; i++) {
+      indexedAssets[recentAssets[i].id] = i;
+    }
+    setState(() => {
+      assets = recentAssets
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 480,
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          // A grid view with 3 items per row
-          crossAxisCount: 2,
-        ),
-        itemCount: assets.length,
-        itemBuilder: (_, index) {
-          return AssetThumbnail(asset: assets[index]);
-        },
+      child: Stack(
+        children: [
+          Positioned(
+            child: SingleChildScrollView(
+              child: Container(
+                height: 480,
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    // A grid view with 3 items per
+                    crossAxisCount: 2,
+                  ),
+                  itemCount: assets.length,
+                  itemBuilder: (_, index) {
+                    print(assets[index].id + " " + widget.isSelectedArray[assets[index].id].toString());
+                    return AssetThumbnail(
+                        asset: assets[index],
+                        isSelected: widget.isSelectedArray[assets[index].id] == null ? false : widget.isSelectedArray[assets[index].id],
+                        id: assets[index].id,
+                        onPressedIcon: () {
+                          // Future.delayed(const Duration(milliseconds: 2000), () => showDialog(
+                          //   context: context,
+                          //   builder: (context) => StreamIt(),
+                          // ));
+                          var isSelectedArrayCopy = widget.isSelectedArray;
+                          if (isSelectedArrayCopy[assets[index].id] == null){
+                            isSelectedArrayCopy[assets[index].id] = false;
+                          }
+                          isSelectedArrayCopy[assets[index].id] = !isSelectedArrayCopy[assets[index].id];
+                          widget.pressedAppBar(
+                              assets[index].id, isSelectedArrayCopy[assets[index].id]
+                          );
+                          setState(() => {
+                            currentSelectedImage = isSelectedArrayCopy[assets[index].id] ? currentSelectedImage + 1 : currentSelectedImage - 1,
+                          });
+                        }
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: widget.currentSelectedImage > 0,
+            child: Positioned(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.only(top: 415),
+                  child: ButtonTheme(
+                    minWidth: MediaQuery.of(context).size.width,
+                    height: 64,
+                    child: RaisedButton.icon(
+                      icon: Icon(Icons.stacked_line_chart, color: Colors.white),
+                      onPressed: () => {
+                        imageArr.clear(),
+                        widget.isSelectedArray.forEach((k,v) => {
+                        if (v == true) {
+                          imageArr.add(assets[indexedAssets[k]])
+                        }}),
+                        print(imageArr.toString()),
+                        widget.imageThrow(imageArr),
+                      },
+                      color: Color(0xFF3CB371),
+                      textColor: Colors.white,
+                      label: Text('Stream it!',
+                          style: GoogleFonts.sunflower(fontSize: 25)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -60,9 +144,17 @@ class AssetThumbnail extends StatelessWidget {
   const AssetThumbnail({
     Key key,
     @required this.asset,
+    this.isSelected,
+    this.hideSelectedBox,
+    @required this.onPressedIcon,
+    @required this.id,
   }) : super(key: key);
 
   final AssetEntity asset;
+  final bool isSelected;
+  final bool hideSelectedBox;
+  final String id;
+  final Function onPressedIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +187,12 @@ class AssetThumbnail extends StatelessWidget {
             children: [
               // Wrap the image in a Positioned.fill to fill the space
               Positioned.fill(
-                child: Image.memory(bytes, fit: BoxFit.cover),
+                child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 3.0, color: Colors.transparent)
+                    ),
+                    child: Image.memory(bytes, fit: BoxFit.cover)
+                ),
               ),
               // Display a Play icon if the asset is a video
               if (asset.type == AssetType.video)
@@ -106,6 +203,27 @@ class AssetThumbnail extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('assets/images/play.png'),
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: hideSelectedBox == null || !hideSelectedBox,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        child: IconButton(
+                          icon: new Icon(
+                            !isSelected ? MdiIcons.checkboxBlankOutline : MdiIcons.checkboxMarked,
+                            color: !isSelected ? Colors.white : Color(0xFF3CB371),
+                            size: 30,
+                          ),
+                          onPressed: () {onPressedIcon();},
+                        ),
                       ),
                     ),
                   ),
@@ -236,7 +354,7 @@ class _VideoScreenState extends State<VideoScreen> {
 //   @override
 //   _ImagePickerScreenState createState() => _ImagePickerScreenState();
 // }
-//
+
 // class _ImagePickerScreenState extends State<ImagePickerScreen> {
 //   File _image;
 //   final picker = ImagePicker();
@@ -272,6 +390,8 @@ class _VideoScreenState extends State<VideoScreen> {
 //     );
 //   }
 // }
+
+
 // import 'dart:async';
 // import 'dart:io';
 // import 'package:flutter/foundation.dart';

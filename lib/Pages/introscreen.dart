@@ -158,20 +158,6 @@ class OnBoard extends StatelessWidget {
 }
 
 /// Home Page of our example app.
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-      ), //Appbar
-      body: Center(
-        child: Text("This is the home page of the app"),
-      ), //Center
-    ); //Scaffold
-  }
-}
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:introduction_screen/introduction_screen.dart';
@@ -289,12 +275,3 @@ class HomePage extends StatelessWidget {
 //
 //
 //
-// class HomePage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Home')),
-//       body: const Center(child: Text("This is the screen after Introduction")),
-//     );
-//   }
-// }

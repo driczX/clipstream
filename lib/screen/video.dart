@@ -288,6 +288,7 @@ class _VideoRecorderState extends State<VideoRecorder> {
 
     try {
       await controller.startVideoRecording(filePath);
+      //      await controller.startVideoRecording(filePath);
       videoPath = filePath;
     } on CameraException catch (e) {
       _showCameraException(e);

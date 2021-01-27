@@ -1,4 +1,5 @@
 import 'package:clipstream/Animations/animation.dart';
+import 'package:clipstream/Pages/management.dart';
 import 'package:clipstream/screen/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

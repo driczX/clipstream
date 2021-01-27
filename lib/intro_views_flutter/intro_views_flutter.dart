@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:clipstream/Pages/management.dart';
-import 'package:clipstream/test/phonesetup.dart';
+import 'package:clipstream/Pages/usersetup.dart';
 import 'package:flutter/material.dart';
 import 'package:clipstream/intro_views_flutter/Animation_Gesture/animated_page_dragger.dart';
 import 'package:clipstream/intro_views_flutter/Animation_Gesture/page_dragger.dart';

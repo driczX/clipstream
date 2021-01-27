@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:clipstream/Pages/management.dart';
+import 'package:clipstream/Pages/verification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -78,7 +79,7 @@ class PhoneSetup extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ManagementScreen(),
+                          builder: (context) => VerificationPage(),
                         ), //MaterialPageRoute
                       );
                     },
