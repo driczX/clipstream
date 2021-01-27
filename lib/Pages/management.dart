@@ -469,7 +469,7 @@ class _ManagementState extends State<ManagementScreen> {
               child: Expanded(
                 child: SingleChildScrollView(
                   child: Container(
-                    color: Colors.blue,
+                    color: Colors.red,
                     child: Stack(
                       children: [
                         Positioned(
