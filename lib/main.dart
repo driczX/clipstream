@@ -79,7 +79,7 @@ class Clipstream extends StatelessWidget {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        primarySwatch: Colors.red,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: PushNotif(),
+        home: WelcomeScreen(),
       // PinCodeScreen(phoneNo: 6282118067233.toString()),
     );
   }
