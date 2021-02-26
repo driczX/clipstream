@@ -1,17 +1,10 @@
 import 'dart:io';
-
-import 'package:clipstream/Pages/account_settings.dart';
-import 'package:clipstream/not_used_file/intro_page.dart';
-import 'package:clipstream/Pages/management.dart';
-import 'package:clipstream/test/setup.dart';
-import 'package:clipstream/screen/preview.dart';
 import 'package:clipstream/Pages/introscreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intro_slider/intro_slider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 
@@ -27,13 +20,13 @@ class _CameraScreenState extends State<CameraScreen> {
   String imgPath;
   String videoPath;
   String iconValue;
+  String dropdownValue;
+  String albumName ='Media';
   bool selectedIcon = false;
   bool isSwitched;
   bool onRecording = false;
   bool cancelButton = true;
   bool videoButtonPressed = false;
-  String dropdownValue;
-  String albumName ='Media';
 
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -330,8 +323,8 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ('media ' + MediaQuery.of(context).size.height.toString());
-    ('media ' + MediaQuery.of(context).size.width.toString());
+    // ('media ' + MediaQuery.of(context).size.height.toString());
+    // ('media ' + MediaQuery.of(context).size.width.toString());
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -360,20 +353,17 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
           ),
           // Visibility(
-          //   visible: videoButtonPressed ? true : cancelButton,
+          //   visible: videoButtonPressed ? false : cancelButton,
           //   child: Positioned(
-          //     top: MediaQuery.of(context).size.height - 620.0,
+          //     top: MediaQuery.of(context).size.height - 630.0,
           //     right: MediaQuery.of(context).size.width - 40.0,
           //     child: IconButton(
-          //       onPressed: (){
-          //         Navigator.push(
-          //           context,
-          //           MaterialPageRoute(builder: (context) => ManagementScreen()),
-          //         );
-          //       },
+          //         onPressed: (){
+          //           Navigator.of(context).pop();
+          //         },
           //         icon: Icon(Icons.close,
-          //             color: Colors.white,
-          //             size: 34,)),
+          //           color: Colors.white,
+          //           size: 34,)),
           //   ),
           // ),
           bottomContainerNav(),
@@ -479,7 +469,6 @@ class _CameraScreenState extends State<CameraScreen> {
         msg: 'Error: ${e.code}\n${e.description}',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        // timeInSecForIos: 1,
         backgroundColor: Colors.red,
         textColor: Colors.white
     );

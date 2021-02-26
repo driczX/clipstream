@@ -26,7 +26,6 @@ class _WelcomeState extends State<WelcomeScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _scaleController =

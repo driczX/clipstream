@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-// import 'package:flutter_widgets/const/_const.dart';
 
 class DropDownButtonPage extends StatefulWidget {
   @override
@@ -7,6 +6,8 @@ class DropDownButtonPage extends StatefulWidget {
 }
 
 class _DropDownButtonState extends State<DropDownButtonPage> {
+  // String dropdownValue;
+  // bool selectedDropdown = false;
   var _value = "1";
 
   DropdownButton _normal2Down() => DropdownButton<String>(
@@ -38,7 +39,7 @@ class _DropDownButtonState extends State<DropDownButtonPage> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "2",
+            value: "3",
             child: Container(
               alignment: Alignment.center,
               child: Text(
@@ -68,6 +69,14 @@ class _DropDownButtonState extends State<DropDownButtonPage> {
 
   @override
   Widget build(BuildContext context) {
+    // DropdownButton dropDownOption;
+    // if (dropdownValue == 'Unpublished'){
+    //   dropDownOption = "UNPUBLISHED" as DropdownButton;
+    // } else if (dropdownValue == 'Published'){
+    //   dropDownOption = "PUBLISHED" as DropdownButton;
+    // } else {
+    //   dropDownOption = "ALL" as DropdownButton;
+    // }
     return Container(
         child: Column(
           children: <Widget>[

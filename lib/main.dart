@@ -10,6 +10,8 @@ import 'package:clipstream/test/cameratest.dart';
 import 'package:clipstream/not_used_file/dropdowntest.dart';
 import 'package:clipstream/test/localstorage.dart';
 import 'package:clipstream/test/otpcode.dart';
+import 'package:clipstream/test/pushnotification.dart';
+import 'package:clipstream/test/singlechoice.dart';
 import 'package:clipstream/test/timer.dart';
 import 'package:clipstream/test/verificationtest.dart';
 import 'package:clipstream/Pages/settings.dart';
@@ -41,6 +43,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import 'package:clipstream/screen/camera.dart';
@@ -53,7 +56,12 @@ import 'package:video_player/video_player.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(Clipstream());
+  runApp(MultiProvider(
+      providers:[
+        ChangeNotifierProvider<SingleChoice>(create: (_) => SingleChoice())
+      ],
+  child: Clipstream()));
+  // runApp(Clipstream());
 }
 
 class Clipstream extends StatelessWidget {
@@ -68,16 +76,11 @@ class Clipstream extends StatelessWidget {
             backgroundColor: Colors.black.withOpacity(0),
           ),
           fontFamily: 'Rubik',
-          primarySwatch: Colors.red,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       primarySwatch: Colors.red,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: WelcomeScreen(),
+        home: PushNotif(),
       // PinCodeScreen(phoneNo: 6282118067233.toString()),
     );
   }
 }
-
-
-
-
-

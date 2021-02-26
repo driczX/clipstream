@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:clipstream/Pages/account_settings.dart';
 import 'package:clipstream/not_used_file/intro_page.dart';
@@ -10,9 +11,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intro_slider/intro_slider.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 
@@ -27,17 +28,36 @@ class _CameraButtonState extends State<CameraButton> {
   int selectedCameraIndex;
   String imgPath;
   String videoPath;
+  String iconValue;
+  String dropdownValue;
+  String albumName ='Media';
+  bool selectedIcon = false;
   bool isSwitched;
   bool onRecording = false;
   bool cancelButton = true;
   bool videoButtonPressed = false;
-  String dropdownValue;
-  String albumName ='Media';
+  bool isFullScreen = false;
+
+  void updateResolutionNormal() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  /* To Update Screen Resolution LandscapeLeft,LandscapeRight */
+  void updateResolutionLandscape() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+  }
 
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final LocalStorage storage = new LocalStorage('clipstream_app');
 
   Future initCamera(CameraDescription cameraDescription) async {
     if (controller != null) {
@@ -90,6 +110,16 @@ class _CameraButtonState extends State<CameraButton> {
   ///Icon and Button Here
   Widget cameraControl(context) {
     print(isSwitched);
+    IconData iconOption;
+    if (iconValue == 'Timer'){
+      iconOption = Icons.timer;
+    } else if (iconValue == 'HDR'){
+      iconOption = Icons.hd;
+    } else if (iconValue == "Flash"){
+      iconOption = Icons.flash_auto;
+    } else {
+      iconOption = Icons.more_horiz;
+    }
     return Flexible(
       child: Container(
         // color: Colors.red,
@@ -102,16 +132,20 @@ class _CameraButtonState extends State<CameraButton> {
               height: 44,
               child: FloatingActionButton(
                 // color: Colors.red,
-                child: Icon(
-                  Icons.menu,
-                  color: videoButtonPressed ? Colors.white : Color(0xFF696969),
-                ),
+                //rotate the icon code
+                // child: Transform.rotate(
+                // angle: 190.1,
+                  child: Icon(
+                    Icons.menu,
+                    color: videoButtonPressed ? Colors.white : Color(0xFF696969),
+                  ),
                 backgroundColor: videoButtonPressed ? Colors.transparent : Colors.white,
                 elevation: 0,
                 onPressed: () {},
                 heroTag: null,
+                ),
               ),
-            ),
+            // ),
             SizedBox(
               width: 2,
             ),
@@ -120,19 +154,23 @@ class _CameraButtonState extends State<CameraButton> {
               // color: Colors.blue,
               width: 65,
               height: 65,
-              child: Switch(
-                // isSwitched = null ? Container() : isSwitched,
-                  value: isSwitched == null ? false : isSwitched,
-                  activeTrackColor: videoButtonPressed ? Colors.teal : Colors.greenAccent,
-                  activeColor: Colors.teal,
-                  inactiveTrackColor: Color(0xFFA9A9A9),
-                  onChanged: (value) {
-                    setState(() {
-                      isSwitched = value;
-                      //print(isSwitched);
-                    });
-                  }),
-            ),
+              //rotate the icon code
+              // child: Transform.rotate(
+              // angle: 190.1,
+                child: Switch(
+                  // isSwitched = null ? Container() : isSwitched,
+                    value: isSwitched == null ? false : isSwitched,
+                    activeTrackColor: videoButtonPressed ? Colors.teal : Colors.greenAccent,
+                    activeColor: Colors.teal,
+                    inactiveTrackColor: Color(0xFFA9A9A9),
+                    onChanged: (value) {
+                      setState(() {
+                        isSwitched = value;
+                        //print(isSwitched);
+                      });
+                    }),
+              ),
+            // ),
             SizedBox(
               width: 20,
             ),
@@ -190,10 +228,14 @@ class _CameraButtonState extends State<CameraButton> {
                     cancelButton = !cancelButton;
                   });
                 },
-                child: Icon(
-                  videoButtonPressed ? Icons.camera_alt : Icons.videocam,
-                  color: videoButtonPressed ? Colors.white : Colors.red,
-                ),
+                //rotate the icon code
+                  // child: Transform.rotate(
+                  // angle: 190.1,
+                  child: Icon(
+                    videoButtonPressed ? Icons.camera_alt : Icons.videocam,
+                    color: videoButtonPressed ? Colors.white : Colors.red,
+                  ),
+                // ),
                 heroTag: null,
               ),
             ),
@@ -207,19 +249,25 @@ class _CameraButtonState extends State<CameraButton> {
               width: 44,
               height: 44,
               child: FloatingActionButton(
-                child: Icon(
-                  Icons.more_horiz,
-                  color: videoButtonPressed ? Colors.white : Color(0xFF696969),
-                ),
                 backgroundColor: videoButtonPressed ? Colors.transparent : Colors.white,
                 elevation: 0,
                 onPressed: () {
-                  // Navigator.push(context,
-                  // MaterialPageRoute(builder: (context) => Dropdown));
+                  setState(() {
+                    selectedIcon = true;
+                  });
+                  print("123123");
                 },
                 heroTag: null,
+                // rotate the icon
+                // child: Transform.rotate(
+                //   angle: 190.1,
+                child: Icon(
+                  iconOption,
+                  color: videoButtonPressed ? Colors.white : Color(0xFF696969),
+                ),
               ),
             ),
+            // ),
             SizedBox(
               width: 20,
             ),
@@ -271,25 +319,24 @@ class _CameraButtonState extends State<CameraButton> {
         // await cameraController.takePicture(path).then((value) { aslinya
         // Navigator.push(
         //   context,
-        //   MaterialPageRoute(builder: (context) => IntroScreen()),
+        //   MaterialPageRoute(builder: (context) => OnBoard(
+        //   )),
         // );
-        // print('here');
         print(path);
         GallerySaver.saveImage(path, albumName: albumName).then((bool success) {
           setState(() {
-            print('Image is saved');
+            print('Image is saved to Device');
           });
         });
-        //TODO: Change this to saving image in me tab.
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OnBoard(
-              imgPath: path,
-              fileName: "$name.png",
-            ),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => OnBoard(
+        //       imgPath: path,
+        //       fileName: "$name.png",
+        //     ),
+        //   ),
+        // );
       });
     } catch (e) {
       showCameraException(e);
@@ -315,83 +362,72 @@ class _CameraButtonState extends State<CameraButton> {
     }).catchError((e) {
       print('Error : ${e.code}');
     });
-    var items = storage.getItem('onboarding');
-    print("tes init " + items.toString());
-    _saveToStorage();
   }
 
-  _saveToStorage() {
-    storage.setItem('onboarding', DateTime.now());
-  }
   @override
   Widget build(BuildContext context) {
-
-    var items12 = storage.getItem('onboarding');
+    // ('media ' + MediaQuery.of(context).size.height.toString());
+    // ('media ' + MediaQuery.of(context).size.width.toString());
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Container(
-        child: FutureBuilder(
-            future: storage.ready,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              return Stack(
-                overflow: Overflow.clip,
-                children: <Widget>[
-                  cameraPreview(),
-                  Positioned(
-                    top: MediaQuery.of(context).size.height - 630.0,
-                    left: MediaQuery.of(context).size.width - 80.0,
-                    child: MaterialButton(
-                      onPressed: () {
-
-                      },
-                      textColor: Colors.white,
-                      padding: const EdgeInsets.all(0.0),
-                      child: Container(
-                        width: 120,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[SizedBox(width: 6), cameraToggle()],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Visibility(
-                    visible: videoButtonPressed ? true : cancelButton,
-                    child: Positioned(
-                      top: MediaQuery.of(context).size.height - 630.0,
-                      right: MediaQuery.of(context).size.width - 40.0,
-                      child: IconButton(
-                          onPressed: (){
-                            Navigator.of(context).pop();
-                          },
-                          icon: Icon(Icons.close,
-                            color: Colors.white,
-                            size: 34,)),
-                    ),
-                  ),
-                  //TODO: Build a local storage.
-                  ///Text muncul tapi null, not complete yet.
-                  // Positioned(
-                  //   top: MediaQuery.of(context).size.height - 330.0,
-                  //   right: MediaQuery.of(context).size.width - 40.0,
-                  //   child: Text(
-                  //       items12.toString(),
-                  //       style: TextStyle(
-                  //         color: Colors.white,
-                  //         fontSize: 20,
-                  //       ),
-                  //   ),
-                  // ),
-                  bottomContainerNav()
-                ],
-              );
-            }
-        ),
+      body: Stack(
+        overflow: Overflow.clip,
+        children: <Widget>[
+          cameraPreview(),
+          // GestureDetector(
+          //   onTap: () {
+          //     setState(() {
+          //       isFullScreen = !isFullScreen;
+          //       if (isFullScreen) {
+          //         updateResolutionLandscape();
+          //       } else {
+          //         updateResolutionNormal();
+          //       }
+          //     });
+          //   },
+          // ),
+          Positioned(
+            top: MediaQuery.of(context).size.height - 630.0,
+            left: MediaQuery.of(context).size.width - 80.0,
+            child: MaterialButton(
+              onPressed: () {},
+              textColor: Colors.white,
+              padding: const EdgeInsets.all(0.0),
+              child: Container(
+                width: 120,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[SizedBox(width: 6), cameraToggle()],
+                ),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: videoButtonPressed ? true : cancelButton,
+            child: Positioned(
+              top: MediaQuery.of(context).size.height - 630.0,
+              right: MediaQuery.of(context).size.width - 40.0,
+              child: IconButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(Icons.close,
+                    color: Colors.white,
+                    size: 34,)),
+            ),
+          ),
+          bottomContainerNav(),
+          Positioned(
+              top: 420,
+              right: 25,
+              child: icon()
+          )
+        ],
       ),
     );
   }
@@ -422,6 +458,11 @@ class _CameraButtonState extends State<CameraButton> {
           backgroundColor: Colors.grey,
           textColor: Colors.white
       );
+      GallerySaver.saveVideo(videoPath, albumName: albumName).then((bool success) {
+        setState(() {
+          print('Video is saved');
+        });
+      });
     });
   }
 
@@ -483,7 +524,6 @@ class _CameraButtonState extends State<CameraButton> {
         msg: 'Error: ${e.code}\n${e.description}',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        // timeInSecForIos: 1,
         backgroundColor: Colors.red,
         textColor: Colors.white
     );
@@ -496,7 +536,7 @@ class _CameraButtonState extends State<CameraButton> {
         height: 112,
         width: double.infinity,
         padding: EdgeInsets.all(15),
-        color: videoButtonPressed ? Colors.black.withOpacity(0.5) : Colors.white,
+        color: videoButtonPressed ? Colors.black.withOpacity(0.3) : Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -534,33 +574,98 @@ class _CameraButtonState extends State<CameraButton> {
     String errortext = 'Error ${e.code} \nError message: ${e.description}';
   }
 
+  Widget _selectPopup() => PopupMenuButton<int>(
+    itemBuilder: (context) => [
+      PopupMenuItem(
+        value: 1,
+        child: Text("First"),
+      ),
+      PopupMenuItem(
+        value: 2,
+        child: Text("Second"),
+      ),
+    ],
+    initialValue: 2,
+    onCanceled: () {
+      print("You have canceled the menu.");
+    },
+    onSelected: (value) {
+      print("value:$value");
+    },
+    icon: Icon(Icons.list),
+  );
+
   ///Dropdown More Button
   Widget icon() {
-    return DropdownButton<String>(
-      value: dropdownValue,
-      icon: Icon(Icons.arrow_downward),
-      iconSize: 24,
-      elevation: 16,
-      style: TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
+    return Visibility(
+      visible: selectedIcon,
+      child: Container (
+        child: Column(
+          children: [
+            IconButton(icon: Icon(Icons.timer,
+              color: videoButtonPressed ? Colors.white : Color(0xFF696969),
+            ), onPressed: (){
+              setState(() {
+                iconValue = 'Timer';
+                selectedIcon = false;
+              });
+            }),
+            IconButton(icon: Icon(Icons.hd,
+              color: videoButtonPressed ? Colors.white : Color(0xFF696969),
+            ), onPressed: (){
+              setState(() {
+                iconValue = 'HDR';
+                selectedIcon = false;
+              });
+            }),
+            IconButton(icon: Icon(Icons.flash_auto,
+              color: videoButtonPressed ? Colors.white : Color(0xFF696969),
+            ), onPressed: (){
+              setState(() {
+                iconValue = 'Flash';
+                selectedIcon = false;
+              });
+            }),
+            IconButton(icon: Icon(Icons.keyboard_arrow_down_sharp,
+              color: videoButtonPressed ? Colors.white : Color(0xFF696969),
+            ), onPressed: (){
+              setState(() {
+                iconValue = 'Back';
+                selectedIcon = false;
+              });
+            }),
+          ],
+        ),
+        color: videoButtonPressed ? Colors.black.withOpacity(0.3) : Color(0xFFF5F5F5),
+        height: 200,
+        width: 60,
       ),
-      onChanged: (String newValue) {
-        setState(() {
-          dropdownValue = newValue;
-        });
-      },
-      items: <String>[
-        Icons.timer.toString(),
-        Icons.hd.toString(),
-        Icons.flash_auto.toString()
-      ].map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
     );
+    // return DropdownButton<String>(
+    //   value: dropdownValue,
+    //   icon: Icon(Icons.arrow_downward),
+    //   iconSize: 24,
+    //   elevation: 16,
+    //   style: TextStyle(color: Colors.deepPurple),
+    //   underline: Container(
+    //     height: 2,
+    //     color: Colors.deepPurpleAccent,
+    //   ),
+    //   onChanged: (String newValue) {
+    //     setState(() {
+    //       dropdownValue = newValue;
+    //     });
+    //   },
+    //   items: <String>[
+    //     Icons.timer.toString(),
+    //     Icons.hd.toString(),
+    //     Icons.flash_auto.toString()
+    //   ].map<DropdownMenuItem<String>>((String value) {
+    //     return DropdownMenuItem<String>(
+    //       value: value,
+    //       child: Text(value),
+    //     );
+    //   }).toList(),
+    // );
   }
 }

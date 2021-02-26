@@ -1,12 +1,16 @@
 import 'package:clipstream/Pages/dropdownforimage.dart';
 import 'package:clipstream/Pages/imagepicker.dart';
+import 'package:clipstream/Pages/newgroupalert.dart';
 import 'package:clipstream/screen/camera.dart';
 import 'package:clipstream/screen/camerapreview.dart';
 import 'package:clipstream/Pages/manageaudience.dart';
+import 'package:clipstream/test/singlechoice.dart';
+import 'package:clipstream/test/singlechoicedata.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:provider/provider.dart';
 
 ///Management, Activity, Settings, Account_Settings here!
 ///Management done, Settings done, Account_Settings done, Activity 60%.
@@ -28,7 +32,6 @@ class _ManagementState extends State<ManagementScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero, () {
       displayBottomSheet(context);
@@ -72,9 +75,6 @@ class _ManagementState extends State<ManagementScreen> {
                                   builder: (context) => AlertAudience(),
                                 ));
                       },
-                      // onPressed: (){
-                      // Navigator.pop(context);
-                      // },
                       child: Text('Got it',
                           style: TextStyle(fontSize: 15, color: Colors.white)),
                     ),
@@ -139,12 +139,7 @@ class _ManagementState extends State<ManagementScreen> {
                 "a": false,
               };
             });
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => SettingScreen()),
-            // );
           },
-          //TODO: setstate currentSelected = 0
           child: Icon(
             Icons.close,
             color: Colors.white,
@@ -158,11 +153,6 @@ class _ManagementState extends State<ManagementScreen> {
               onTap: () {
                 //TODO: How to edit the selected image
                 print("test123s");
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => AccountSetting()),
-                // );
               },
               child: Icon(
                 Icons.edit,
@@ -175,6 +165,8 @@ class _ManagementState extends State<ManagementScreen> {
             child: GestureDetector(
               ///onTap icon delete
               onTap: () {
+                // _image = null;
+                // image.removeAt(index);
                 //TODO: How to delete the selected image
               },
               child: Icon(Icons.delete, color: Colors.white),
@@ -191,32 +183,6 @@ class _ManagementState extends State<ManagementScreen> {
       });
     }
     print("Current Selected " + currentSelected.toString());
-    // for (var i=0;i<value.length;i++)
-    // {
-    //   containerTest.add(new Container(
-    //     child: Column(
-    //       children: [
-    //         Container(
-    //           child: AssetThumbnail(
-    //             asset: value[i],
-    //             isSelected: false,
-    //             id: value[i].id,
-    //           ),
-    //           color: Colors.black,
-    //           height: 250,
-    //           width: 400,
-    //         ),
-    //       ],
-    //     ),
-    //     color: Colors.blue,
-    //     height: 300,
-    //     width: 400,
-    //     // child: ImageThrow(
-    //     // ),
-    //   ),
-    //   );
-    // }
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -266,7 +232,6 @@ class _ManagementState extends State<ManagementScreen> {
                           setState(() {
                             currentTab = "Me";
                             isEveryoneButtonPressed = false;
-
                             currentSelected = 0;
                             isSelectedArray = {
                               "a": false,
@@ -393,43 +358,6 @@ class _ManagementState extends State<ManagementScreen> {
                                           ],
                                         ),
                                       ),
-                                      // Padding(
-                                      //   padding:
-                                      //       const EdgeInsets.only(left: 10),
-                                      //   child: Align(
-                                      //     child: Text("Edric",
-                                      //         overflow:
-                                      //             TextOverflow.ellipsis,
-                                      //         style: TextStyle(
-                                      //           fontSize: 20,
-                                      //           fontWeight: FontWeight.bold,
-                                      //         )),
-                                      //     alignment: Alignment.centerLeft,
-                                      //   ),
-                                      // ),
-                                      // Padding(
-                                      //   padding: const EdgeInsets.only(
-                                      //       left: 10, top: 5)2,
-                                      //   child: Align(
-                                      //     child: Text("Bandung",
-                                      //         style: TextStyle(
-                                      //           fontSize: 15,
-                                      //           color: Color(0xFF696969),
-                                      //         )),
-                                      //     alignment: Alignment.centerLeft,
-                                      //   ),
-                                      // ),
-                                      // Padding(
-                                      //   padding: const EdgeInsets.only(bottom: 20),
-                                      //   child: Align(
-                                      //     child: Text("0 Comments"),
-                                      //     alignment: Alignment.topRight,
-                                      //   ),
-                                      // ),
-                                      // Align(
-                                      //   child: Text("0 Likes"),
-                                      //   alignment: Alignment.topRight,
-                                      // ),
                                       Padding(
                                         padding: EdgeInsets.only(),
                                         child: IconButton(
@@ -438,14 +366,6 @@ class _ManagementState extends State<ManagementScreen> {
                                             color: Color(0xFF696969),
                                             onPressed: () {}),
                                       ),
-                                      // Container(
-                                      //   // TODO: buat text hard code nya ending user onboard
-                                      //   child: Text("Edric",
-                                      //   style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-                                      //   color: Colors.blue,
-                                      //   height: 100,
-                                      //   width: 500,
-                                      // ),
                                     ],
                                   ),
                                 ),
@@ -469,7 +389,7 @@ class _ManagementState extends State<ManagementScreen> {
               child: Expanded(
                 child: SingleChildScrollView(
                   child: Container(
-                    color: Colors.red,
+                    color: Colors.blue,
                     child: Stack(
                       children: [
                         Positioned(
@@ -488,28 +408,6 @@ class _ManagementState extends State<ManagementScreen> {
             ),
           ],
         ),
-        // bottomNavigationBar: Theme(
-        //   data: Theme.of(context).copyWith(
-        //     canvasColor: Colors.transparent,
-        //     primaryColor: Colors.red,
-        // ),
-        // child: Visibility(
-        //   visible: currentSelected == 0 ? false : true,
-        //   child: ButtonTheme(
-        //     height: 64,
-        //     child: RaisedButton.icon(
-        //       icon: Icon(Icons.stacked_line_chart, color: Colors.white),
-        //       onPressed: () => {
-        //
-        //       },
-        //       color: Color(0xFF3CB371),
-        //       textColor: Colors.white,
-        //       label: Text('Stream it!',
-        //       style: GoogleFonts.sunflower(fontSize: 25)),
-        //     ),
-        //   ),
-        // ),
-        // ),
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 30, right: 2),
           child: Visibility(
@@ -543,6 +441,8 @@ class ActivityScreen extends StatefulWidget {
 
 class _ActivityState extends State<ActivityScreen> {
   bool yesButton = false;
+  bool iconClicked = false;
+  bool doneButton = false;
 
   @override
   Widget build(BuildContext context) {
@@ -553,14 +453,10 @@ class _ActivityState extends State<ActivityScreen> {
           elevation: 0,
           centerTitle: true,
           backgroundColor: Colors.white,
-          title: Icon(Icons.timeline_sharp, color: Colors.red),
+          title: Icon(Icons.timeline_sharp, color: iconClicked ? Color(0xFF696969) : Colors.red),
           leading: GestureDetector(
             onTap: () {
               Navigator.of(context).pop();
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => ManagementScreen()),
-              // );
             },
             child: Icon(
               Icons.arrow_back_sharp,
@@ -583,20 +479,10 @@ class _ActivityState extends State<ActivityScreen> {
           color: Color(0xFFF5F5F5),
           child: Column(
             children: [
-              // Expanded(
-              //   child:
-              //   Container(
-              //     color: Colors.amber,
-              //       // color: Color(0xFFF5F5F5),
-              //       width: 400,
-              //       child: Column(
-              //         children: [],
-              //       )),
-              // ),
               Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 370.0),
+                padding: iconClicked ? const EdgeInsets.only(top: 0, bottom: 0) : const EdgeInsets.only(top: 10, bottom: 150),
                 child: Visibility(
-                  visible: true,
+                  visible: yesButton ? false : true,
                   child: Container(
                     height: 130,
                     width: 344,
@@ -604,7 +490,7 @@ class _ActivityState extends State<ActivityScreen> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                        Row(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -634,7 +520,6 @@ class _ActivityState extends State<ActivityScreen> {
                                           ),
                                         ),
                                       ])),
-                              // Text("Alice", style: TextStyle(fontWeight: FontWeight.bold)),
                             ],
                           ),
                           Padding(
@@ -662,14 +547,16 @@ class _ActivityState extends State<ActivityScreen> {
                                               )),
                                         ),
                                       ),
+
                                       Padding(
                                         padding: const EdgeInsets.only(left: 60.0),
                                         child: SizedBox(
                                           width: 65,
                                           child: FlatButton(
                                               onPressed: () {
+                                                // Navigator.of(context).pop();
                                                 setState(() {
-                                                  yesButton = !yesButton;
+                                                   yesButton = !yesButton;
                                                 });
                                               },
                                               color: Colors.white,
@@ -681,12 +568,15 @@ class _ActivityState extends State<ActivityScreen> {
                                               )),
                                         ),
                                       ),
+
                                       Padding(
                                         padding: const EdgeInsets.only(right: 12.0),
                                         child: SizedBox(
                                           width: 113,
                                           child: FlatButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                _showSingleChoiceDialog(context);
+                                              },
                                               color: Colors.red,
                                               child: Text(
                                                 "Yes, add back",
@@ -702,22 +592,46 @@ class _ActivityState extends State<ActivityScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 130),
+              Visibility(
+                visible: yesButton == true && iconClicked == false,
                 child: Container(
-                  color: Colors.white,
-                  height: 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Icon(Icons.access_time_rounded,
-                            color: Color(0xFF696969)),
-                      ),
-                      Text("Activity history",
-                          style: TextStyle(color: Color(0xFF696969), fontSize: 18))
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 10.0),
+                    child: Image.asset('assets/images/smile.png',
+                        color: Colors.grey,
+                        height: 100,
+                        width: 100),
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: yesButton == true && iconClicked == false,
+                  child: Text("All caught up!",style: TextStyle(color: Colors.grey, fontSize: 15),)),
+              Expanded (
+              // Padding(
+              //   padding: EdgeInsets.only(top: 130),
+                child: Align(
+                  alignment: iconClicked ? FractionalOffset.topCenter : FractionalOffset.bottomCenter,
+                  child: Container(
+                    color: Colors.white,
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: yesButton ? MainAxisAlignment.center : MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(5),
+                         child: IconButton(icon: Icon(Icons.access_time_rounded,
+                              color: iconClicked? Colors.red : Color(0xFF696969)),
+                                  onPressed: (){
+                           setState(() {
+                             iconClicked = !iconClicked;
+                           });
+                                  }),
+                        ),
+                        Text(yesButton ? "" :"Activity history",
+                            style: TextStyle(color: Color(0xFF696969), fontSize: 18))
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -725,6 +639,109 @@ class _ActivityState extends State<ActivityScreen> {
           ),
         ),
       ),
+    );
+  }
+  _showSingleChoiceDialog(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) {
+        var _singleNotifier = Provider.of<SingleChoice>(context);
+        return AlertDialog(
+            title: Text("Add to existing group"),
+            actions: <Widget>[
+              ButtonTheme(
+                minWidth: 50,
+                child: RaisedButton(
+                    color: Colors.white,
+                    elevation: 0,
+                    child: Text('Cancel', style: TextStyle(color: Colors.teal)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+              ),
+              ButtonTheme(
+                minWidth: 50,
+                child: RaisedButton(
+                    color: Colors.white,
+                    elevation: 0,
+                    child: Text('Done', style: TextStyle(color: Colors.teal)),
+                    onPressed: () {
+                      setState(() {
+                        doneButton = true;
+                      });
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => NewGroup()));
+                      Navigator.of(context).pop();
+                    }),
+              ),
+            ],
+            content: SingleChildScrollView(
+              child: Container(
+                // width: double.infinity,
+                child: Column(
+                  // mainAxisSize: MainAxisSize.min,
+                  children: groups
+                      .map((e) => RadioListTile(
+                    title: Text(e),
+                    value: e,
+                    groupValue: _singleNotifier.currentGroups,
+                    selected: _singleNotifier.currentGroups == e,
+                    onChanged: (value) {
+                      if (value != _singleNotifier.currentGroups) {
+                        _singleNotifier.updateGroups(value);
+                        // Navigator.of(context).pop();
+                      }
+                    },
+                  ))
+                      .toList(),
+                ),
+              ),
+            ));
+      });
+}
+
+class NewGroup extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      title: Text('New Group'),
+      content: TextField (
+        onChanged: (value) {},
+        decoration: InputDecoration(hintText: "Enter new group name"),
+      ),
+      actions: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(right: 20.0),
+          child: ButtonTheme(
+            minWidth: 50,
+            child: RaisedButton(
+              color: Colors.white,
+                elevation: 0,
+                child: Text('Cancel', style: TextStyle(color: Colors.teal)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 20.0),
+          child: ButtonTheme(
+            minWidth: 50,
+            child: RaisedButton(
+                color: Colors.white,
+                elevation: 0,
+                child: Text(
+                  "Create",
+                  style: TextStyle(color: Colors.teal),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+          ),
+        )
+      ],
     );
   }
 }
@@ -825,7 +842,6 @@ class _SettingState extends State<SettingScreen> {
             ),
           ),
           // Padding(
-          //   padding: const EdgeInsets.only(right: 180, top: 10),
           Column(
             children: [
               Container(
@@ -975,10 +991,6 @@ class _AccountSettingState extends State<AccountSetting> {
           leading: GestureDetector(
             onTap: () {
               Navigator.of(context).pop();
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => SettingScreen()),
-              // );
             },
             child: Icon(
               Icons.arrow_back_sharp,
@@ -1028,10 +1040,8 @@ class _AccountSettingState extends State<AccountSetting> {
                   child: Container(
                     child: IconButton(
                         icon: Icon(Icons.edit),
-                        // onPressed: () => myFocusNode.requestFocus(),
                         onPressed: () {
                           myFocusNode.requestFocus();
-                          print('test123');
                         }),
                   ),
                 ),

@@ -43,7 +43,7 @@ class SetupScreenState extends State<SetupScreen> {
             fontSize: 10.0,
             fontStyle: FontStyle.italic,
             fontFamily: 'Raleway'),
-        pathImage: "assets/images/switch.jpg",
+        pathImage: "assets/images/switchh.jpg",
       ),
     );
   }

@@ -32,9 +32,9 @@ class OnBoard extends StatelessWidget {
         titleTextStyle: TextStyle(fontFamily: 'MyFont', color: Colors.white, fontSize: 15),
         bodyTextStyle: TextStyle(fontFamily: 'MyFont', color: Colors.white, fontSize: 15),
         mainImage: Image.asset(
-            'assets/images/switch.jpg',
+            'assets/images/switchh.jpg',
             height: 150.0,
-            width: 150.0,
+            width: 220.0,
             // alignment: Alignment.center,
           ),
         ),
@@ -54,7 +54,7 @@ class OnBoard extends StatelessWidget {
         ),
       ),
       mainImage: Image.asset(
-        'assets/images/contact.png',
+        'assets/images/contact.jpg',
         height: 145.0,
         width: 100.0,
         alignment: Alignment.center,

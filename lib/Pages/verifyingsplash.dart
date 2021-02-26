@@ -11,7 +11,6 @@ class VerifySplash extends StatefulWidget {
 class _VerifySplashState extends State<VerifySplash> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     startTime();
   }
